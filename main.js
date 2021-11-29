@@ -30,6 +30,8 @@ const displayController = (function () {
   const markerXBtn = document.querySelector("#marker-x");
   const markerOBtn = document.querySelector("#marker-o");
   const tiles = document.querySelectorAll(".tile");
+  const modal = document.querySelector(".winner-modal");
+  const winnerText = document.querySelector(".winner-text");
 
   function updateGameBoard() {
     tiles.forEach(
@@ -37,8 +39,18 @@ const displayController = (function () {
     );
   }
 
-  function displayWinner(){
-    console.log(gameController.getWinner().name);
+  function displayWinner(winner){
+    if(!winner) return;
+    else if(winner.name === "Human"){
+      winnerText.textContent = `The winner is Human!`;
+    }
+    else if(winner.name === "Bot"){
+      winnerText.textContent = `The winner is Bot!`;
+    }
+    else if(winner === "tie"){
+      winner.textContent = `It's a tie!`;
+    }
+    modal.style.display = "block";
   }
 
   markerXBtn.textContent = gameBoard.getMarkerX();
@@ -74,6 +86,12 @@ const gameController = (function () {
     [0, 4, 8],
     [2, 4, 6],
   ];
+  
+  const tiles = document.querySelectorAll(".tile");
+  const resetBtn = document.querySelector(".reset-btn");
+  const playAgainBtn = document.querySelector("#play-again-btn");
+  const winnerModal  = document.querySelector(".winner-modal");
+
 
   // generate bot move indexes excluding those indexes have been taken
   function _generateRandomNumber(min, max, humanPositions, botPositions) {
@@ -101,9 +119,12 @@ const gameController = (function () {
     console.log(gameBoard.getGameBoard());
   }
 
+  function playAgain(){
+    winnerModal.style.display = 'none';
+    resetGame();
+  }
+
   // game logic
-  const tiles = document.querySelectorAll(".tile");
-  const resetBtn = document.querySelector(".reset-btn");
 
   tiles.forEach((tile, index) =>
     tile.addEventListener("click", (e) => {
@@ -111,12 +132,14 @@ const gameController = (function () {
         const min = 0;
         const max = 8;
 
+        // human go first by default
         human.addMarks(gameBoard.getGameBoard(), index);
         humanPositions.push(index);
 
         let humanWinningCondition = winningPositions.some((position) =>
           position.every((num) => humanPositions.includes(num))
         );
+
         if (humanWinningCondition) {
           winner = human;
         }
@@ -144,10 +167,7 @@ const gameController = (function () {
           winner = "tie";
         }
 
-        if(winner){
-          displayController.displayWinner();
-        }
-        else return;
+        displayController.displayWinner(winner);
         
         return winner;
       } 
@@ -157,6 +177,8 @@ const gameController = (function () {
 
   // reset game
   resetBtn.addEventListener("click", resetGame);
+  playAgainBtn.addEventListener("click",playAgain);
+
 
   return { getWinner, resetGame };
 })();
