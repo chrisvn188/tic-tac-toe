@@ -13,29 +13,32 @@
     </header>
 
     <div class="choices-container">
-        <div class="btn choice-x active">
-            <span>X</span>
-            <span>-</span> 
+        <div class="btn marker-btn" id="marker-x" data-marker="X">
         </div>
-        <div class="btn choice-o">
-            <span>O</span>
-            <span>-</span> 
+        <div class="btn marker-btn" id="marker-o" data-marker="O">
         </div>
     </div>
 
     <div class="game-board">
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
+        <div class="tile"></div>
+        <div class="tile"></div>
+        <div class="tile"></div>
+        <div class="tile"></div>
+        <div class="tile"></div>
+        <div class="tile"></div>
+        <div class="tile"></div>
+        <div class="tile"></div>
+        <div class="tile"></div>
     </div>
 
-    <button class="btn reset-btn">Reset</button>
+    <div class="congratulation-modal">
+        <div class="congratulation-content">
+            <span>The winner is Human!</span> 
+            <button class="btn">Play Again</button>   
+        </div>
+    </div>
+
+    <button class="btn reset-btn" id="play-again-btn">Reset</button>
     <script src="main.js"></script>
 </body>
 </html>
