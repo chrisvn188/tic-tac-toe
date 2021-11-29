@@ -11,36 +11,28 @@ const gameBoard = (function () {
   // assign gameboard an array with 9 empty string
   let _gameBoard = ["", "", "", "", "", "", "", "", ""];
 
-  // function to get game board
-  function getGameBoard() {
-    return _gameBoard;
-  }
-
-  function resetBoard() {
-    _gameBoard = ["", "", "", "", "", "", "", "", ""];
-  }
+  const getGameBoard = () => _gameBoard;
+  const resetBoard = () => (_gameBoard = ["", "", "", "", "", "", "", "", ""]);
 
   return { getGameBoard, resetBoard };
 })();
 
-const Player = function (name,marker) {
-
-  function addMarks(gameBoard, index) {
+const Player = function (name, marker) {
+  const addMarks = (gameBoard, index) => {
     gameBoard.splice(index, 1, marker);
     displayController.updateGameBoard();
-    return marker;
-  }
+  };
   return { name, addMarks };
 };
 
 const displayController = (function () {
-  function updateGameBoard() {
+  const updateGameBoard = () => {
     tiles.forEach(
       (tile, index) => (tile.textContent = gameBoard.getGameBoard()[index])
     );
-  }
+  };
 
-  function displayWinner(winner) {
+  const displayWinner = (winner) => {
     if (!winner) return;
     else if (winner.name === "Human") {
       winnerText.textContent = `The winner is Human!`;
@@ -50,7 +42,7 @@ const displayController = (function () {
       winner.textContent = `It's a tie!`;
     }
     modal.style.display = "block";
-  }
+  };
 
   markerXBtn.textContent = "X";
   markerOBtn.textContent = "O";
@@ -77,11 +69,11 @@ const gameController = (function () {
   ];
 
   // create players, human and bot
-  const human = Player("Human","X");
-  const bot = Player("Bot","O");
+  const human = Player("Human", "X");
+  const bot = Player("Bot", "O");
 
   // generate bot move indexes excluding those indexes have been taken
-  function generateRandomNumber(min, max, humanPositions, botPositions) {
+  const generateRandomNumber = (min, max, humanPositions, botPositions) => {
     let randomNumber = Math.floor(Math.random() * (max - min) + min);
     let condition =
       humanPositions.includes(randomNumber) ||
@@ -89,13 +81,11 @@ const gameController = (function () {
     return condition
       ? generateRandomNumber(min, max, humanPositions, botPositions)
       : randomNumber;
-  }
+  };
 
-  function getWinner() {
-    return winner;
-  }
+  const getWinner = () => winner;
 
-  function resetGame() {
+  const resetGame = () => {
     gameBoard.resetBoard();
     winner = undefined;
     humanPositions = [];
@@ -103,7 +93,7 @@ const gameController = (function () {
     displayController.updateGameBoard();
   }
 
-  function playAgain() {
+  const playAgain = () => {
     winnerModal.style.display = "none";
     resetGame();
   }
@@ -156,6 +146,6 @@ const gameController = (function () {
   // reset game
   resetBtn.addEventListener("click", resetGame);
   playAgainBtn.addEventListener("click", playAgain);
-  
+
   return { getWinner, resetGame };
 })();
