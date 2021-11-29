@@ -26,6 +26,26 @@ const gameBoard = (function () {
   return { getGameBoard, getMarkerX, getMarkerO, resetBoard };
 })();
 
+const Player = function (name) {
+  let _marker = "";
+
+  function chooseMarker(marker) {
+    _marker = marker;
+  }
+
+  function getMarker() {
+    return _marker;
+  }
+
+  function addMarks(gameBoard, index) {
+    gameBoard.splice(index, 1, _marker);
+    displayController.updateGameBoard();
+    return _marker;
+  }
+
+  return { name, chooseMarker, getMarker, addMarks };
+};
+
 const displayController = (function () {
   const markerXBtn = document.querySelector("#marker-x");
   const markerOBtn = document.querySelector("#marker-o");
@@ -39,15 +59,13 @@ const displayController = (function () {
     );
   }
 
-  function displayWinner(winner){
-    if(!winner) return;
-    else if(winner.name === "Human"){
+  function displayWinner(winner) {
+    if (!winner) return;
+    else if (winner.name === "Human") {
       winnerText.textContent = `The winner is Human!`;
-    }
-    else if(winner.name === "Bot"){
+    } else if (winner.name === "Bot") {
       winnerText.textContent = `The winner is Bot!`;
-    }
-    else if(winner === "tie"){
+    } else if (winner === "tie") {
       winner.textContent = `It's a tie!`;
     }
     modal.style.display = "block";
@@ -56,7 +74,7 @@ const displayController = (function () {
   markerXBtn.textContent = gameBoard.getMarkerX();
   markerOBtn.textContent = gameBoard.getMarkerO();
 
-  return { updateGameBoard,displayWinner};
+  return { updateGameBoard, displayWinner };
 })();
 
 const gameController = (function () {
@@ -86,12 +104,11 @@ const gameController = (function () {
     [0, 4, 8],
     [2, 4, 6],
   ];
-  
+
   const tiles = document.querySelectorAll(".tile");
   const resetBtn = document.querySelector(".reset-btn");
   const playAgainBtn = document.querySelector("#play-again-btn");
-  const winnerModal  = document.querySelector(".winner-modal");
-
+  const winnerModal = document.querySelector(".winner-modal");
 
   // generate bot move indexes excluding those indexes have been taken
   function _generateRandomNumber(min, max, humanPositions, botPositions) {
@@ -119,8 +136,8 @@ const gameController = (function () {
     console.log(gameBoard.getGameBoard());
   }
 
-  function playAgain(){
-    winnerModal.style.display = 'none';
+  function playAgain() {
+    winnerModal.style.display = "none";
     resetGame();
   }
 
@@ -142,9 +159,7 @@ const gameController = (function () {
 
         if (humanWinningCondition) {
           winner = human;
-        }
-
-        else if (humanPositions.length + botPositions.length < max) {
+        } else if (humanPositions.length + botPositions.length < max) {
           let randomIndex = _generateRandomNumber(
             min,
             max,
@@ -161,44 +176,19 @@ const gameController = (function () {
           if (botWinningCondition) {
             winner = bot;
           }
-        }
-
-        else{
+        } else {
           winner = "tie";
         }
 
         displayController.displayWinner(winner);
-        
+
         return winner;
-      } 
-      else return;
+      } else return;
     })
   );
 
   // reset game
   resetBtn.addEventListener("click", resetGame);
-  playAgainBtn.addEventListener("click",playAgain);
-
-
+  playAgainBtn.addEventListener("click", playAgain);
   return { getWinner, resetGame };
 })();
-
-function Player(name) {
-  let _marker = "";
-
-  function chooseMarker(marker) {
-    _marker = marker;
-  }
-
-  function getMarker() {
-    return _marker;
-  }
-
-  function addMarks(gameBoard, index) {
-    gameBoard.splice(index, 1, _marker);
-    displayController.updateGameBoard();
-    return _marker;
-  }
-
-  return { name, chooseMarker, getMarker, addMarks };
-}
