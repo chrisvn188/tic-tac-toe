@@ -1,58 +1,39 @@
+const markerXBtn = document.querySelector("#marker-x");
+const markerOBtn = document.querySelector("#marker-o");
+const tiles = document.querySelectorAll(".tile");
+const modal = document.querySelector(".winner-modal");
+const winnerText = document.querySelector(".winner-text");
+const resetBtn = document.querySelector(".reset-btn");
+const playAgainBtn = document.querySelector("#play-again-btn");
+const winnerModal = document.querySelector(".winner-modal");
+
 const gameBoard = (function () {
   // assign gameboard an array with 9 empty string
   let _gameBoard = ["", "", "", "", "", "", "", "", ""];
 
-  // gameboard has 2 marker choices
-  const _markerX = "X";
-  const _markerO = "O";
-
   // function to get game board
   function getGameBoard() {
     return _gameBoard;
-  }
-  // functions to get markers
-  function getMarkerX() {
-    return _markerX;
-  }
-
-  function getMarkerO() {
-    return _markerO;
   }
 
   function resetBoard() {
     _gameBoard = ["", "", "", "", "", "", "", "", ""];
   }
 
-  return { getGameBoard, getMarkerX, getMarkerO, resetBoard };
+  return { getGameBoard, resetBoard };
 })();
 
-const Player = function (name) {
-  let _marker = "";
-
-  function chooseMarker(marker) {
-    _marker = marker;
-  }
-
-  function getMarker() {
-    return _marker;
-  }
+const Player = function (name,marker) {
 
   function addMarks(gameBoard, index) {
-    gameBoard.splice(index, 1, _marker);
+    gameBoard.splice(index, 1, marker);
     displayController.updateGameBoard();
-    return _marker;
+    return marker;
   }
-
-  return { name, chooseMarker, getMarker, addMarks };
+  return { name, addMarks };
 };
 
 const displayController = (function () {
-  const markerXBtn = document.querySelector("#marker-x");
-  const markerOBtn = document.querySelector("#marker-o");
-  const tiles = document.querySelectorAll(".tile");
-  const modal = document.querySelector(".winner-modal");
-  const winnerText = document.querySelector(".winner-text");
-
   function updateGameBoard() {
     tiles.forEach(
       (tile, index) => (tile.textContent = gameBoard.getGameBoard()[index])
@@ -71,8 +52,8 @@ const displayController = (function () {
     modal.style.display = "block";
   }
 
-  markerXBtn.textContent = gameBoard.getMarkerX();
-  markerOBtn.textContent = gameBoard.getMarkerO();
+  markerXBtn.textContent = "X";
+  markerOBtn.textContent = "O";
 
   return { updateGameBoard, displayWinner };
 })();
@@ -80,16 +61,6 @@ const displayController = (function () {
 const gameController = (function () {
   let isGameOver = false;
   let winner = undefined;
-
-  // create players
-  const human = Player("Human");
-  const bot = Player("Bot");
-
-  // set marker to players
-  human.chooseMarker(gameBoard.getMarkerX());
-  bot.chooseMarker(gameBoard.getMarkerO());
-
-  // indexes that are taken by human and bot
   let humanPositions = [];
   let botPositions = [];
 
@@ -105,19 +76,18 @@ const gameController = (function () {
     [2, 4, 6],
   ];
 
-  const tiles = document.querySelectorAll(".tile");
-  const resetBtn = document.querySelector(".reset-btn");
-  const playAgainBtn = document.querySelector("#play-again-btn");
-  const winnerModal = document.querySelector(".winner-modal");
+  // create players, human and bot
+  const human = Player("Human","X");
+  const bot = Player("Bot","O");
 
   // generate bot move indexes excluding those indexes have been taken
-  function _generateRandomNumber(min, max, humanPositions, botPositions) {
+  function generateRandomNumber(min, max, humanPositions, botPositions) {
     let randomNumber = Math.floor(Math.random() * (max - min) + min);
     let condition =
       humanPositions.includes(randomNumber) ||
       botPositions.includes(randomNumber);
     return condition
-      ? _generateRandomNumber(min, max, humanPositions, botPositions)
+      ? generateRandomNumber(min, max, humanPositions, botPositions)
       : randomNumber;
   }
 
@@ -130,10 +100,7 @@ const gameController = (function () {
     winner = undefined;
     humanPositions = [];
     botPositions = [];
-
     displayController.updateGameBoard();
-    console.log("Reset game successfully!!!");
-    console.log(gameBoard.getGameBoard());
   }
 
   function playAgain() {
@@ -142,7 +109,6 @@ const gameController = (function () {
   }
 
   // game logic
-
   tiles.forEach((tile, index) =>
     tile.addEventListener("click", (e) => {
       if (e.target.textContent === "" && !winner) {
@@ -160,7 +126,7 @@ const gameController = (function () {
         if (humanWinningCondition) {
           winner = human;
         } else if (humanPositions.length + botPositions.length < max) {
-          let randomIndex = _generateRandomNumber(
+          let randomIndex = generateRandomNumber(
             min,
             max,
             humanPositions,
@@ -190,5 +156,6 @@ const gameController = (function () {
   // reset game
   resetBtn.addEventListener("click", resetGame);
   playAgainBtn.addEventListener("click", playAgain);
+  
   return { getWinner, resetGame };
 })();
