@@ -13,13 +13,19 @@ const Gameboard = (function () {
         }
     };
 
-    const isBoardFullOfMarkers = () => {
+    const checkBoardFullOfMarkers = () => {
         return board.every((cell) => cell !== '');
     };
 
-    const isEmptyCell = (position) => board[position] === '';
+    const checkEmptyCell = (position) => board[position] === '';
 
-    return { getBoard, reset, addMarker, isEmptyCell, isBoardFullOfMarkers };
+    return {
+        getBoard,
+        reset,
+        addMarker,
+        checkEmptyCell,
+        checkBoardFullOfMarkers,
+    };
 })();
 
 const Player = function (marker) {
@@ -40,7 +46,9 @@ const GameController = (function () {
     ];
     const playerX = Player('X');
     const playerO = Player('O');
+
     let currentPlayer = playerX;
+
     let gameOver = false;
 
     const switchTurn = () => (currentPlayer === playerX ? playerO : playerX);
@@ -54,7 +62,7 @@ const GameController = (function () {
     };
 
     const makeMove = (position) => {
-        if (gameOver || !Gameboard.isEmptyCell(position)) return;
+        if (gameOver || !Gameboard.checkEmptyCell(position)) return;
 
         Gameboard.addMarker(position, currentPlayer.getMarker());
 
@@ -64,7 +72,7 @@ const GameController = (function () {
             return;
         }
 
-        if (Gameboard.isBoardFullOfMarkers()) {
+        if (Gameboard.checkBoardFullOfMarkers()) {
             console.log(`It's a tie!`);
             gameOver = true;
             return;
@@ -81,3 +89,35 @@ const GameController = (function () {
 
     return { makeMove, resetGame };
 })();
+
+const DisplayController = (function () {
+    const gameBoardElement = document.querySelector('#game-board');
+    const restartButtonElement = document.querySelector('#restart-button');
+
+    const createCell = (value) => {
+        const cellElement = document.createElement('div');
+        cellElement.classList.add('cell');
+        cellElement.textContent = value;
+        return cellElement;
+    };
+
+    const displayBoard = () => {
+        const board = Gameboard.getBoard();
+        board.forEach((value) => {
+            const newCell = createCell(value);
+            gameBoardElement.append(newCell);
+        });
+    };
+
+    const render = () => {
+        displayBoard();
+        update();
+        console.log('Rendering...');
+    };
+    const update = () => {
+        console.log('Updating...');
+    };
+    return { render, update };
+})();
+
+DisplayController.render();

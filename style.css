@@ -1,23 +1,82 @@
-#gameBoard {
-    display: grid;
-    grid-template: repeat(3, 1fr) / repeat(3, 1fr);
-    gap: 10px;
-    max-width: 300px;
-    margin: 20px auto;
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
 }
 
-.game-cell {
-    width: 100px;
-    height: 100px;
-    background-color: #f0f0f0;
+* {
+    margin: 0;
+}
+
+body {
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    background-color: #fff7f1;
+    display: grid;
+    place-content: center;
+    height: 100vh;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+    display: block;
+    max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+    font: inherit;
+}
+
+.game-board {
+    display: flex;
+    width: 400px;
+    height: 400px;
+    flex-wrap: wrap;
+}
+
+.cell {
+    background-color: #ffe4c9;
+    outline: 1px solid #45867f;
+    width: calc(100% / 3);
+    height: calc(100% / 3);
+    flex-shrink: 0;
+}
+
+.restart-button {
+    margin-top: 2rem;
+    padding: 1rem;
+    cursor: pointer;
+    font-size: 1.25rem;
+    background-color: #e78895;
+    color: white;
+    border: none;
+}
+
+.marker-picker {
     display: flex;
     justify-content: center;
-    align-items: center;
-    font-size: 2em;
-    cursor: pointer;
-}
-
-#restartButton {
-    display: block;
-    margin: 20px auto;
+    margin-bottom: 2rem;
+    .marker-x {
+        background-color: #e78895;
+        padding: 0.5rem 3rem;
+        border: none;
+        cursor: pointer;
+        font-size: 1.5rem;
+        color: white;
+    }
+    .marker-o {
+        background-color: #bed1cf;
+        padding: 0.5rem 3rem;
+        border: none;
+        cursor: pointer;
+        font-size: 1.5rem;
+        color: black;
+    }
 }
