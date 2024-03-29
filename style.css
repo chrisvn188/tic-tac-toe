@@ -47,6 +47,10 @@ select {
     width: calc(100% / 3);
     height: calc(100% / 3);
     flex-shrink: 0;
+    display: grid;
+    place-content: center;
+    font-size: 3rem;
+    cursor: pointer;
 }
 
 .restart-button {
@@ -79,4 +83,30 @@ select {
         font-size: 1.5rem;
         color: black;
     }
+}
+
+.result-modal {
+    opacity: 0;
+    transform: scaleY(0);
+}
+.result-modal[open] {
+    opacity: 1;
+    transform: scaleY(1);
+    padding: 1rem;
+    border: 1px solid #45867f;
+    position: fixed;
+    text-align: center;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    & * + * {
+        margin-top: 1rem;
+    }
+}
+.result-modal::backdrop {
+    background: linear-gradient(#e78895, #45867f);
+    opacity: 0.5;
+    display: grid;
+    place-content: center;
 }

@@ -51,7 +51,11 @@ const GameController = (function () {
 
     let gameOver = false;
 
-    const switchTurn = () => (currentPlayer === playerX ? playerO : playerX);
+    const switchTurn = () =>
+        (currentPlayer =
+            currentPlayer.getMarker() === playerX.getMarker()
+                ? playerO
+                : playerX);
 
     const checkWin = (board) => {
         return winConditions.some((condition) =>
@@ -61,20 +65,22 @@ const GameController = (function () {
         );
     };
 
-    const makeMove = (position) => {
+    const addMove = (position) => {
         if (gameOver || !Gameboard.checkEmptyCell(position)) return;
 
         Gameboard.addMarker(position, currentPlayer.getMarker());
 
         if (checkWin(Gameboard.getBoard())) {
-            console.log(`${currentPlayer.getMarker()} wins this round!`);
             gameOver = true;
+            DisplayController.showResultModal(
+                `${currentPlayer.getMarker()} wins this round!`
+            );
             return;
         }
 
         if (Gameboard.checkBoardFullOfMarkers()) {
-            console.log(`It's a tie!`);
             gameOver = true;
+            DisplayController.showResultModal(`It's a tie!`);
             return;
         }
 
@@ -87,37 +93,66 @@ const GameController = (function () {
         gameOver = false;
     };
 
-    return { makeMove, resetGame };
+    return { addMove, resetGame };
 })();
 
 const DisplayController = (function () {
     const gameBoardElement = document.querySelector('#game-board');
     const restartButtonElement = document.querySelector('#restart-button');
+    const resultModal = document.querySelector('#result-modal');
+    const restartButtonOnModal = document.querySelector('#restart-on-modal');
+    const resultText = document.querySelector('#result-text');
 
-    const createCell = (value) => {
+    const createCell = (value, position) => {
         const cellElement = document.createElement('div');
         cellElement.classList.add('cell');
         cellElement.textContent = value;
+        cellElement.setAttribute('data-index', position);
         return cellElement;
     };
 
-    const displayBoard = () => {
-        const board = Gameboard.getBoard();
-        board.forEach((value) => {
-            const newCell = createCell(value);
+    const displayBoard = (board) => {
+        // remove all old children, rendering new children
+        while (gameBoardElement.lastElementChild) {
+            gameBoardElement.removeChild(gameBoardElement.lastElementChild);
+        }
+
+        board.forEach((value, index) => {
+            const newCell = createCell(value, index);
             gameBoardElement.append(newCell);
         });
     };
 
+    const updateResultText = (text) => {
+        resultText.textContent = text;
+    };
+
+    const showResultModal = (text) => {
+        resultModal.showModal();
+        updateResultText(text);
+    };
+
     const render = () => {
-        displayBoard();
-        update();
-        console.log('Rendering...');
+        displayBoard(Gameboard.getBoard());
     };
-    const update = () => {
-        console.log('Updating...');
-    };
-    return { render, update };
+
+    gameBoardElement.addEventListener('click', (e) => {
+        GameController.addMove(+e.target.dataset.index);
+        render();
+    });
+
+    restartButtonElement.addEventListener('click', () => {
+        GameController.resetGame();
+        render();
+    });
+
+    restartButtonOnModal.addEventListener('click', () => {
+        resultModal.close();
+        GameController.resetGame();
+        render();
+    });
+
+    return { render, showResultModal };
 })();
 
 DisplayController.render();
