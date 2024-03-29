@@ -16,6 +16,7 @@ body {
     place-content: center;
     height: 100vh;
     font-family: 'Courier New', Courier, monospace;
+    overflow: hidden;
 }
 
 img,
@@ -109,4 +110,21 @@ select {
     opacity: 0.5;
     display: grid;
     place-content: center;
+}
+
+.marker-picker,
+.game-board,
+.restart-button {
+    animation: moveInBottom 0.5s ease-in;
+}
+
+@keyframes moveInBottom {
+    0% {
+        transform: translateY(100px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
