@@ -167,29 +167,31 @@ const DisplayController = (function () {
         updateResultText(text)
     }
 
-    const render = () => {
-        displayBoard(Gameboard.getBoard())
+    const render = (board) => {
+        displayBoard(board)
     }
 
     gameBoardElement.addEventListener('click', (e) => {
         GameController.addMove(+e.target.dataset.index)
-        render()
+        render(Gameboard.getBoard())
     })
 
     restartButtonElement.addEventListener('click', () => {
         GameController.resetGame()
         updateScoreText()
-        render()
+        render(Gameboard.getBoard())
     })
 
     playNewGameBtn.addEventListener('click', () => {
         resultModal.close()
         GameController.resetBoard()
         updateScoreText()
-        render()
+        render(Gameboard.getBoard())
+    })
+
+    document.addEventListener('DOMContentLoaded', () => {
+        DisplayController.render(Gameboard.getBoard())
     })
 
     return { render, showResultModal, updateScoreText }
 })()
-
-DisplayController.render()
