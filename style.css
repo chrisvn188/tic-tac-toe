@@ -103,9 +103,9 @@ select {
     border: 1px solid #45867f;
     position: fixed;
     text-align: center;
-    top: 50%;
+    top: 0%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translateX(-50%);
     animation: zoomIn 0.5s ease-in;
 
     & * + * {

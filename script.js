@@ -35,7 +35,10 @@ const Player = function (marker) {
     const updateScore = () => {
         score = score + 1
     }
-    return { getMarker, getScore, updateScore }
+    const resetScore = () => {
+        score = 0
+    }
+    return { getMarker, getScore, updateScore, resetScore }
 }
 
 const GameController = (function () {
@@ -81,10 +84,6 @@ const GameController = (function () {
         scoreBoard.push(playerX.getScore(), playerO.getScore())
     }
 
-    const resetScoreBoard = () => {
-        scoreBoard = [0, 0]
-    }
-
     const addMove = (position) => {
         if (gameOver || !Gameboard.checkEmptyCell(position)) return
 
@@ -118,7 +117,9 @@ const GameController = (function () {
 
     const resetGame = () => {
         resetBoard()
-        scoreBoard = [0, 0]
+        playerX.resetScore()
+        playerO.resetScore()
+        updateScoreBoard()
     }
 
     return { addMove, resetGame, resetBoard, getScoreBoard, updateScoreBoard }
