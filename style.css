@@ -68,22 +68,28 @@ select {
     display: flex;
     justify-content: center;
     margin-bottom: 2rem;
-    .marker-x {
-        background-color: #e78895;
-        padding: 0.5rem 3rem;
-        border: none;
-        cursor: pointer;
-        font-size: 1.5rem;
-        color: white;
-    }
-    .marker-o {
-        background-color: #bed1cf;
-        padding: 0.5rem 3rem;
-        border: none;
-        cursor: pointer;
-        font-size: 1.5rem;
+}
+.marker-x,
+.marker-o {
+    padding: 0.5rem 3rem;
+    border: none;
+    font-size: 1.5rem;
+    color: white;
+    position: relative;
+    &::before {
+        content: attr(data-score);
+        position: absolute;
+        top: -2.5rem;
+        left: 50%;
+        transform: translateX(-50%);
         color: black;
     }
+}
+.marker-x {
+    background-color: #e78895;
+}
+.marker-o {
+    background-color: #bed1cf;
 }
 
 .result-modal {

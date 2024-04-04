@@ -8,15 +8,15 @@
     </head>
     <body>
         <div class="marker-picker" id="marker-picker">
-            <button class="marker-x">X</button>
-            <button class="marker-o">O</button>
+            <div class="marker-x" data-score="0">X</div>
+            <div class="marker-o" data-score="0">O</div>
         </div>
         <div class="game-board" id="game-board"></div>
         <button class="restart-button" id="restart-button">Restart Game</button>
 
         <dialog id="result-modal" class="result-modal">
             <div class="result-text" id="result-text"></div>
-            <button id="restart-on-modal">Restart Game</button>
+            <button id="play-new-game-btn">Play New Game</button>
         </dialog>
 
         <script src="script.js"></script>
