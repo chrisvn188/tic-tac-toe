@@ -7,7 +7,7 @@ const Gameboard = (function () {
         board = ['', '', '', '', '', '', '', '', '']
     }
 
-    const addMarker = (position, marker) => {
+    const playNextMove = (position, marker) => {
         if (board[position] === '') {
             board[position] = marker
         }
@@ -22,7 +22,7 @@ const Gameboard = (function () {
     return {
         getBoard,
         reset,
-        addMarker,
+        playNextMove,
         checkEmptyCell,
         checkBoardFullOfMarkers,
     }
@@ -30,14 +30,19 @@ const Gameboard = (function () {
 
 const Player = function (marker) {
     let score = 0
+
     const getMarker = () => marker
+
     const getScore = () => score
+
     const updateScore = () => {
         score = score + 1
     }
+
     const resetScore = () => {
         score = 0
     }
+
     return { getMarker, getScore, updateScore, resetScore }
 }
 
@@ -52,10 +57,11 @@ const GameController = (function () {
         [0, 4, 8],
         [2, 4, 6],
     ]
+
     const playerX = Player('X')
     const playerO = Player('O')
 
-    let scoreBoard = [0, 0]
+    let scoreValues = [0, 0]
 
     let currentPlayer = playerX
 
@@ -75,34 +81,41 @@ const GameController = (function () {
         )
     }
 
-    const getScoreBoard = () => {
-        return scoreBoard
+    const getScoreValues = () => {
+        return scoreValues
     }
 
-    const updateScoreBoard = () => {
-        scoreBoard.splice(0, scoreBoard.length)
-        scoreBoard.push(playerX.getScore(), playerO.getScore())
+    const updateScoreValues = () => {
+        scoreValues.splice(0, scoreValues.length)
+        scoreValues.push(playerX.getScore(), playerO.getScore())
     }
 
     const addMove = (position) => {
         if (gameOver || !Gameboard.checkEmptyCell(position)) return
 
-        Gameboard.addMarker(position, currentPlayer.getMarker())
+        Gameboard.playNextMove(position, currentPlayer.getMarker())
 
         if (checkWin(Gameboard.getBoard())) {
             gameOver = true
+
             currentPlayer.updateScore()
-            updateScoreBoard()
+
+            updateScoreValues()
+
             DisplayController.showResultModal(
                 `${currentPlayer.getMarker()} wins this round!`
             )
+
             DisplayController.updateScoreText()
+
             return
         }
 
         if (Gameboard.checkBoardFullOfMarkers()) {
             gameOver = true
+
             DisplayController.showResultModal(`It's a tie!`)
+
             return
         }
 
@@ -119,10 +132,10 @@ const GameController = (function () {
         resetBoard()
         playerX.resetScore()
         playerO.resetScore()
-        updateScoreBoard()
+        updateScoreValues()
     }
 
-    return { addMove, resetGame, resetBoard, getScoreBoard, updateScoreBoard }
+    return { addMove, resetGame, resetBoard, getScoreValues, updateScoreValues }
 })()
 
 const DisplayController = (function () {
@@ -154,8 +167,8 @@ const DisplayController = (function () {
     }
 
     const updateScoreText = () => {
-        markerX.setAttribute('data-score', GameController.getScoreBoard()[0])
-        markerO.setAttribute('data-score', GameController.getScoreBoard()[1])
+        markerX.setAttribute('data-score', GameController.getScoreValues()[0])
+        markerO.setAttribute('data-score', GameController.getScoreValues()[1])
     }
 
     const updateResultText = (text) => {
